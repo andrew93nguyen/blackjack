@@ -25,7 +25,7 @@ class Hand():
     	self.cardsInHand += cardsDrawn    
         
 
-    def score(self,dealer=0):
+    def score(self,dealer=0,mute=0):
   ### Scores someone's hand. 
   ## dealer = 1 hides scoring for dealer and "hides" the lose function trigger
       value = 0
@@ -43,7 +43,7 @@ class Hand():
       ##value+10, if the the player score is <=21 if one of the Ace(s) is considered an 11, consider one of the Aces an 11    
           value = value+10
 
-      if dealer == 0:
+      if dealer == 0 or mute != 1:
           print("I have a score of " + str(value)+".")
 
           if value > 21:
@@ -58,6 +58,10 @@ class Cards():
     	## Prints the names of all of the cards in the hand. 
     	for cards in hand:
         	print('   The ' + global_card_dict['cardRank'][cards] + ' of ' + global_card_dict['cardSuit'][cards])
+
+class Record():
+    def __init__(self):
+        self.log = []
 
 ################################# Begin Game #############
 def win():
@@ -93,7 +97,7 @@ def playAgain(recursive=0):
 
 
 
-def hitOrStay(mute=0):
+def hitOrStay(player, deck, mute=0):
 ### Returns H or S depending on if the player wants to stand or hit.
     if mute == 0:
         print('''What do you want to do? Input 'S' to stand and 'H' to hit. ''')
@@ -104,9 +108,9 @@ def hitOrStay(mute=0):
         print('''Invalid input. Please enter either 'S' to stand and 'H' to hit. ''')
         hitOrStay(1)    
     elif decide in ['S','s']:
-        hit()
+        hit(player, deck)
     elif hitOrStay() in ['H','s']:
-        stay()
+        stay(player, deck)
 
 ############
 def hit(player, deck):
@@ -118,7 +122,7 @@ def hit(player, deck):
     player.score()
     
 ############
-def stay():
+def stay(player, deck):
 	print('test stay')
 
 def gameStart():
@@ -136,14 +140,12 @@ def gameStart():
     dealer.draw(d.dealCards(2))
     print('''The dealer's first card is the ''' + global_card_dict['cardRank'][dealer.cardsInHand[0]]+ ' of ' + global_card_dict['cardSuit'][dealer.cardsInHand[0]] + ', their second card is face down.')
 
+#### hitOrStay(player1, d)
+
+### temp
     hit(player1, d)
-    hit(player1, d)
-    hit(player1, d)
+### temp
     
-    #if hitOrStay() in ['S','s']:
-     #   hit()
-    #elif hitOrStay() in ['H','s']:
-     #   stay()
 
 
 
