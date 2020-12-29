@@ -88,23 +88,7 @@ def playAgain(recursive=0):
         print('Thanks for playing! :)')
         return
     
-
-##### Add 
-
-def gameStart():
-    d = Deck()
-    d.shuffle()
-    player = Hand()
-    dealer = Hand()
-
-    player.draw(d.dealCards(2))
-    print('I receive 2 cards. My hand contains:')
-    Cards.readHand(player.cardsInHand)
-    player.score()
-	
-    print('The dealer receives 2 cards.')
-    dealer.draw(d.dealCards(2))
-    print('''The dealer's first card is the ''' + global_card_dict['cardRank'][dealer.cardsInHand[0]]+ ' of ' + global_card_dict['cardSuit'][dealer.cardsInHand[0]] + ', their second card is face down.')
+##############################
 
 
 
@@ -118,8 +102,45 @@ def hitOrStay(mute=0):
     if decide not in ['S','H','s','h']:
         print('''Invalid input. Please enter either 'S' to stand and 'H' to hit. ''')
         hitOrStay(1)    
-    else:
-        return decide
+    elif decide in ['S','s']:
+        hit()
+    elif hitOrStay() in ['H','s']:
+        stay()
+
+############
+def hit(player, deck):
+    print('I decide to take a hit, and draw:')
+    player.draw(deck.dealCards(1))
+    print(player.cardsInHand[-1])
+    Cards.readHand([player.cardsInHand[-1]])
+    print('My new score is:')
+    player.score()
+    
+############
+def stay():
+	print('test stay')
+
+def gameStart():
+    d = Deck()
+    d.shuffle()
+    player1 = Hand()
+    dealer = Hand()
+
+    player1.draw(d.dealCards(2))
+    print('I receive 2 cards. My hand contains:')
+    Cards.readHand(player1.cardsInHand)
+    player1.score()
+	
+    print('The dealer receives 2 cards.')
+    dealer.draw(d.dealCards(2))
+    print('''The dealer's first card is the ''' + global_card_dict['cardRank'][dealer.cardsInHand[0]]+ ' of ' + global_card_dict['cardSuit'][dealer.cardsInHand[0]] + ', their second card is face down.')
+
+    hit(player1, d)
+    #if hitOrStay() in ['S','s']:
+     #   hit()
+    #elif hitOrStay() in ['H','s']:
+     #   stay()
+
 
 
 gameStart()
