@@ -1,3 +1,5 @@
+import random as rd
+
 class Deck():
     
     def __init__(self):
@@ -11,19 +13,36 @@ class Deck():
         self.outOfDeck = []
     
     def dealCards(self,numCards):
-        cardsDrawn = self.deck[0:numCards]
+        cardsDealt = self.deck[0:numCards]
         self.outOfDeck += self.deck[0:numCards]
         del self.deck[0:numCards]
-        return cardsDrawn
+        return cardsDealt
     
 class Hand():
 
     def __init__(self):
-    self.cardsInHand = []
-    self.score = 0
+    	self.cardsInHand = []
+    	self.score = 0
 
-    def 
-    
+    def draw(self,cardsDrawn):
+    	self.cardsInHand += cardsDrawn    
+
+class Cards():
+    def readHand(hand):
+    ## Prints the names of all of the cards in the hand. 
+    for cards in hand:
+        print('   The ' + cardDict['cardRank'][cards]+' of ' +cardDict['cardSuit'][cards])
+
+d = Deck()
+d.shuffle()
+player = Hand()
+dealer = Hand()
+
+player.draw(d.dealCards(2))
+print('flag')
+print(player.cardsInHand)
+        
+        
     ###
 ==============================================
 
@@ -115,9 +134,9 @@ def playAgain(recursive=0):
         print('Thanks for playing! :)')
         return
     
-def hitOrStay(recursive=0):
+def hitOrStay(mute=0):
 ### Returns H or S depending on if the player wants to stand or hit.
-    if recursive == 0:
+    if mute == 0:
         print('''What do you want to do? Input 'S' to stand and 'H' to hit. ''')
     
     decide = input()
