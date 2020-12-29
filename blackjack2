@@ -47,6 +47,7 @@ class Hand():
           print("I have a score of " + str(value)+".")
 
           if value > 21:
+              print('I went over 21....')
               lose()
 
       return value
@@ -61,11 +62,11 @@ class Cards():
 ################################# Begin Game #############
 def win():
     print('I win!')
-    playAgain()
+    #playAgain()
 
 def lose():
     print('I lose. :(')
-    playAgain()
+    #playAgain()
     
     
 def playAgain(recursive=0):
@@ -111,9 +112,9 @@ def hitOrStay(mute=0):
 def hit(player, deck):
     print('I decide to take a hit, and draw:')
     player.draw(deck.dealCards(1))
-    print(player.cardsInHand[-1])
     Cards.readHand([player.cardsInHand[-1]])
-    print('My new score is:')
+    print('My hand now contains:')
+    Cards.readHand(player.cardsInHand)
     player.score()
     
 ############
@@ -136,6 +137,9 @@ def gameStart():
     print('''The dealer's first card is the ''' + global_card_dict['cardRank'][dealer.cardsInHand[0]]+ ' of ' + global_card_dict['cardSuit'][dealer.cardsInHand[0]] + ', their second card is face down.')
 
     hit(player1, d)
+    hit(player1, d)
+    hit(player1, d)
+    
     #if hitOrStay() in ['S','s']:
      #   hit()
     #elif hitOrStay() in ['H','s']:
