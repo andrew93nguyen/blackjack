@@ -1,8 +1,39 @@
+class Deck():
+    
+    def __init__(self):
+        cardDict= {'cardID':list(range(52)),
+               'cardRank':['2','3','4','5','6','7','8','9','10','J','Q','K','A','2','3','4','5','6','7','8','9','10','J','Q','K','A','2','3','4','5','6','7','8','9','10','J','Q','K','A','2','3','4','5','6','7','8','9','10','J','Q','K','A'],
+               'cardSuit':['Spades','Spades','Spades','Spades','Spades','Spades','Spades','Spades','Spades','Spades','Spades','Spades','Spades','Clubs','Clubs','Clubs','Clubs','Clubs','Clubs','Clubs','Clubs','Clubs','Clubs','Clubs','Clubs','Clubs','Diamonds','Diamonds','Diamonds','Diamonds','Diamonds','Diamonds','Diamonds','Diamonds','Diamonds','Diamonds','Diamonds','Diamonds','Diamonds','Hearts','Hearts','Hearts','Hearts','Hearts','Hearts','Hearts','Hearts','Hearts','Hearts','Hearts','Hearts','Hearts']
+              }
+    
+    def shuffle(self):
+        self.deck = rd.sample(list(range(52)),52)
+        self.outOfDeck = []
+    
+    def dealCards(self,numCards):
+        cardsDrawn = self.deck[0:numCards]
+        self.outOfDeck += self.deck[0:numCards]
+        del self.deck[0:numCards]
+        return cardsDrawn
+    
+class Hand():
+
+    def __init__(self):
+    self.cardsInHand = []
+    self.score = 0
+
+    def 
+    
+    ###
+==============================================
+
 import pandas as pd 
 import csv 
 import random as rd
 import sys
 import time
+
+
 
 cardDict= {'cardID':list(range(52)),
            'cardRank':['2','3','4','5','6','7','8','9','10','J','Q','K','A','2','3','4','5','6','7','8','9','10','J','Q','K','A','2','3','4','5','6','7','8','9','10','J','Q','K','A','2','3','4','5','6','7','8','9','10','J','Q','K','A'],
