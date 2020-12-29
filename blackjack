@@ -1,0 +1,181 @@
+import pandas as pd 
+import csv 
+import random as rd
+import sys
+import time
+
+cardDict= {'cardID':list(range(52)),
+           'cardRank':['2','3','4','5','6','7','8','9','10','J','Q','K','A','2','3','4','5','6','7','8','9','10','J','Q','K','A','2','3','4','5','6','7','8','9','10','J','Q','K','A','2','3','4','5','6','7','8','9','10','J','Q','K','A'],
+           'cardSuit':['Spades','Spades','Spades','Spades','Spades','Spades','Spades','Spades','Spades','Spades','Spades','Spades','Spades','Clubs','Clubs','Clubs','Clubs','Clubs','Clubs','Clubs','Clubs','Clubs','Clubs','Clubs','Clubs','Clubs','Diamonds','Diamonds','Diamonds','Diamonds','Diamonds','Diamonds','Diamonds','Diamonds','Diamonds','Diamonds','Diamonds','Diamonds','Diamonds','Hearts','Hearts','Hearts','Hearts','Hearts','Hearts','Hearts','Hearts','Hearts','Hearts','Hearts','Hearts','Hearts']
+          }
+
+
+def drawCard(numCards):    
+##Returns card IDs from the top of the deck depending on the number of the cards drawn (numCards)    
+    global outOfDeck
+    print(str(numCards) + ' card(s) are distributed.')
+    cardsDrawn = deckOrder[0:numCards]
+    outOfDeck = outOfDeck + deckOrder[0:numCards]
+    del deckOrder[0:numCards]
+    
+    #print(cardsDrawn,deckOrder)
+    
+    return cardsDrawn, deckOrder
+
+def readHand(hand):
+## Prints the names of all of the cards in the hand. 
+    print('My hand now contains:')
+    for cards in hand:
+        print('   The ' + cardDict['cardRank'][cards]+' of ' +cardDict['cardSuit'][cards])
+        
+def score(hand,dealer=0):
+### Scores someone's hand. 
+## dealer = 1 hides scoring for dealer and "hides" the lose function trigger
+    value = 0
+    numAces = 0
+    for a in hand:
+        if cardDict['cardRank'][a] in ['J','Q','K']:
+            value = value + 10
+        elif cardDict['cardRank'][a] == 'A': 
+            value = value + 1
+            numAces = 0 + 1
+        else: 
+            value = value + int(cardDict['cardRank'][a])
+    
+    if numAces > 0 and value+10 <= 21 :
+    ##value+10, if the the player score is <=21 if one of the Ace(s) is considered an 11, consider one of the Aces an 11    
+        value = value+10
+        
+    if dealer == 0:
+        print("I have a score of " + str(value)+".")
+    
+        if value > 21:
+            lose()
+            
+    return value
+    #print(value,numAces)    
+    
+def win():
+    print('I win!')
+    playAgain()
+
+def lose():
+    print('I lose. :(')
+    playAgain()
+    
+    
+def playAgain(recursive=0):
+### Use this function after a game is done.
+### To do - Add more features
+
+    if recursive==0:
+        print('''Play again? Please enter 'Y' for yes or 'N' for no.''')
+    
+    decide = input()
+
+    if decide not in ['Y','N','y','n']:
+        print('''Invalid input. Please enter 'Y' for yes or 'N' for no.''')
+        playAgain(1)    
+    elif decide in ['Y','y']:
+        print('Shuffling cards.....')
+        time.sleep(1) 
+        newGame()
+    elif decide in ['N','n']:
+        print('Thanks for playing! :)')
+        return
+    
+def hitOrStay(recursive=0):
+### Returns H or S depending on if the player wants to stand or hit.
+    if recursive == 0:
+        print('''What do you want to do? Input 'S' to stand and 'H' to hit. ''')
+    
+    decide = input()
+
+    if decide not in ['S','H','s','h']:
+        print('''Invalid input. Please enter either 'S' to stand and 'H' to hit. ''')
+        hitOrStay(1)    
+    else:
+        return decide
+    
+def dealerDraw(dHand):
+### Adds cards to the dealer's hand and automatically scores them based on Blackjack rules.    
+    tempScore = score(dHand,1)
+    print('Their score is ' + str(tempScore) + '.')
+    if tempScore <=16:
+        print('Because their score is below 17, they must take another card.')
+        dealerHand = dHand + drawCard(1)[0]
+        dealerScore = score(dealerHand,1)
+        print('They draw the ' + str(cardDict['cardRank'][dealerHand[len(dealerHand)-1]]) + ' of '+str(cardDict['cardSuit'][dealerHand[len(dealerHand)-1]])+'.')
+        dealerDraw(dealerHand)
+    elif tempScore > 16 and tempScore <= 21:
+        print('The dealer stands with a score of ' + str(tempScore) + '.')
+        dealerHand = dHand
+####################################
+        print('flag2')
+        print(dealerHand)
+        return dealerHand
+    elif tempScore > 21:
+        print('The dealer went over 21!')
+        win()
+        
+##############################################################################################################
+def newGame():
+    global deckOrder
+    global outOfDeck
+    deckOrder = rd.sample(list(range(52)),52)
+    outOfDeck = []
+    playerHand = []
+    
+
+    print('My turn to draw.')
+        
+
+    playerHand = [] + drawCard(2)[0]
+
+    readHand(playerHand)
+    playerScore = score(playerHand)
+
+
+    dealerHand = [] + drawCard(2)[0]
+
+    dealerScore = score(dealerHand,1)
+    print('The dealer has the ' + str(cardDict['cardRank'][dealerHand[0]]) + ' of ' + str(cardDict['cardSuit'][dealerHand[0]]) + ' face up and another card face down.')
+
+    decide = hitOrStay()
+    ### returns H or S 
+
+    def engine(pHand,dHand,decide):
+    ### After first round of cards are distributed, this function drives the following steps in blackjack.    
+        
+        if decide in ['H','h']:
+            playerHand = pHand + drawCard(1)[0]
+            dealerHand = dHand
+            readHand(playerHand)
+            playerScore = score(playerHand)
+            x = hitOrStay()
+            engine(playerHand,dealerHand,x)
+
+        elif decide in ['S','s']:
+        ### After you stay, it is the dealer's turn.
+            print('The dealer reveals their face down card as the '+ str(cardDict['cardRank'][dHand[1]]) + ' of ' + str(cardDict['cardSuit'][dHand[1]])+'.') 
+            playerHand = pHand
+            dealerHand = dealerDraw(dHand)  
+#########flag2
+            print('flag3')
+            print(dealerHand)
+            print('My score is ' + str(score(playerHand,1)) + ''', while the dealer's score is ''' + str(score(dealerHand,1)) + '.')
+
+            if score(playerHand,1) > score(dealerHand,1):
+                print('My score is higher.')
+                win()
+
+            elif score(playerHand,1) < score(dealerHand,1):
+                print('My score is lower.')
+                lose()
+            elif score(playerHand,1) == score(dealerHand,1):
+                print('We have the same score, so we have tied.')
+                playAgain()
+
+    engine(playerHand,dealerHand,decide)
+
+newGame()
