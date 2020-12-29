@@ -1,0 +1,125 @@
+import random as rd
+
+class Deck():
+    
+    def __init__(self):
+        global global_card_dict
+        global_card_dict = {'cardID':list(range(52)),'cardRank':['2','3','4','5','6','7','8','9','10','J','Q','K','A','2','3','4','5','6','7','8','9','10','J','Q','K','A','2','3','4','5','6','7','8','9','10','J','Q','K','A','2','3','4','5','6','7','8','9','10','J','Q','K','A'],'cardSuit':['Spades','Spades','Spades','Spades','Spades','Spades','Spades','Spades','Spades','Spades','Spades','Spades','Spades','Clubs','Clubs','Clubs','Clubs','Clubs','Clubs','Clubs','Clubs','Clubs','Clubs','Clubs','Clubs','Clubs','Diamonds','Diamonds','Diamonds','Diamonds','Diamonds','Diamonds','Diamonds','Diamonds','Diamonds','Diamonds','Diamonds','Diamonds','Diamonds','Hearts','Hearts','Hearts','Hearts','Hearts','Hearts','Hearts','Hearts','Hearts','Hearts','Hearts','Hearts','Hearts']}
+    
+    def shuffle(self):
+        self.deck = rd.sample(list(range(52)),52)
+        self.outOfDeck = []
+    
+    def dealCards(self,numCards):
+        cardsDealt = self.deck[0:numCards]
+        self.outOfDeck += self.deck[0:numCards]
+        del self.deck[0:numCards]
+        return cardsDealt
+    
+class Hand():
+
+    def __init__(self):
+    	self.cardsInHand = []
+
+    def draw(self,cardsDrawn):
+    	self.cardsInHand += cardsDrawn    
+        
+
+    def score(self,dealer=0):
+  ### Scores someone's hand. 
+  ## dealer = 1 hides scoring for dealer and "hides" the lose function trigger
+      value = 0
+      numAces = 0
+      for a in self.cardsInHand:
+          if global_card_dict['cardRank'][a] in ['J','Q','K']:
+              value = value + 10
+          elif global_card_dict['cardRank'][a] == 'A': 
+              value = value + 1
+              numAces = 0 + 1
+          else: 
+              value = value + int(global_card_dict['cardRank'][a])
+
+      if numAces > 0 and value+10 <= 21 :
+      ##value+10, if the the player score is <=21 if one of the Ace(s) is considered an 11, consider one of the Aces an 11    
+          value = value+10
+
+      if dealer == 0:
+          print("I have a score of " + str(value)+".")
+
+          if value > 21:
+              lose()
+
+      return value
+
+
+class Cards():
+    def readHand(hand):
+    	## Prints the names of all of the cards in the hand. 
+    	for cards in hand:
+        	print('   The ' + global_card_dict['cardRank'][cards] + ' of ' + global_card_dict['cardSuit'][cards])
+
+################################# Begin Game #############
+def win():
+    print('I win!')
+    playAgain()
+
+def lose():
+    print('I lose. :(')
+    playAgain()
+    
+    
+def playAgain(recursive=0):
+### Use this function after a game is done.
+### To do - Add more features
+
+    if recursive==0:
+        print('''Play again? Please enter 'Y' for yes or 'N' for no.''')
+    
+    decide = input()
+
+    if decide not in ['Y','N','y','n']:
+        print('''Invalid input. Please enter 'Y' for yes or 'N' for no.''')
+        playAgain(1)    
+    elif decide in ['Y','y']:
+        print('Shuffling cards.....')
+        time.sleep(1) 
+        newGame()
+    elif decide in ['N','n']:
+        print('Thanks for playing! :)')
+        return
+    
+
+##### Add 
+
+def gameStart():
+    d = Deck()
+    d.shuffle()
+    player = Hand()
+    dealer = Hand()
+
+    player.draw(d.dealCards(2))
+    print('I receive 2 cards. My hand contains:')
+    Cards.readHand(player.cardsInHand)
+    player.score()
+	
+    print('The dealer receives 2 cards.')
+    dealer.draw(d.dealCards(2))
+    print('''The dealer's first card is the ''' + global_card_dict['cardRank'][dealer.cardsInHand[0]]+ ' of ' + global_card_dict['cardSuit'][dealer.cardsInHand[0]] + ', their second card is face down.')
+
+
+
+def hitOrStay(mute=0):
+### Returns H or S depending on if the player wants to stand or hit.
+    if mute == 0:
+        print('''What do you want to do? Input 'S' to stand and 'H' to hit. ''')
+    
+    decide = input()
+
+    if decide not in ['S','H','s','h']:
+        print('''Invalid input. Please enter either 'S' to stand and 'H' to hit. ''')
+        hitOrStay(1)    
+    else:
+        return decide
+
+
+gameStart()
